@@ -1,12 +1,10 @@
 package daos;
 
+import com.sun.jdi.connect.Connector;
 import dtos.Person;
 import ConnectionFact.ConnectionFactory;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +31,7 @@ public class DAOPerson implements DAO {
         Connection connection = ConnectionFactory.getConnection();
         try{
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM person WHERE id=" + id);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM person WHERE id = " + id);
             if(rs.next()) return extractFromResultSet(rs);
         }
         catch (SQLException e){
@@ -48,9 +46,7 @@ public class DAOPerson implements DAO {
         try{
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM person");
-            while(rs.next()){
-                results.add(extractFromResultSet(rs));
-            }
+            while(rs.next()){ results.add(extractFromResultSet(rs)); }
         }
         catch (SQLException e){
             e.printStackTrace();
@@ -58,15 +54,49 @@ public class DAOPerson implements DAO {
         return null;
     }
 
-    public Person update(Object dto) {
+    public Person update(Person person) {
+        Connection connection = ConnectionFactory.getConnection();
+        try{
+            PreparedStatement ps = connection.prepareStatement("UPDATE user SET first_name=?, last_name=?, email=?, gender=? WHERE id=?");
+            ps.setString(1, person.getFirstName());
+            ps.setString(2, person.getLastName());
+            ps.setString(3, person.getEmail());
+            ps.setString(4, person.getGender());
+            ps.setInt(5, person.getId());
+            int i = ps.executeUpdate();
+            if(i == 1) return person;
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
         return null;
     }
 
-    public Person create(Object dto) {
+    public Person create(Person person) {
+        Connection connection = ConnectionFactory.getConnection();
+        try{
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO People VALUES (NULL, ?, ?, ?, ?)");
+            ps.setString(1, person.getFirstName());
+            ps.setString(2, person.getLastName());
+            ps.setString(3, person.getEmail());
+            ps.setString(4, person.getGender());
+            int i = ps.executeUpdate();
+            if(i == 1) return person;
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
         return null;
     }
 
     public void delete(Integer id) {
-
+        Connection connection = ConnectionFactory.getConnection();
+        try {
+            Statement stmt = connection.createStatement();
+            int i = stmt.executeUpdate("DELETE FROM user WHERE id=" + id);
+        }
+        catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 }
