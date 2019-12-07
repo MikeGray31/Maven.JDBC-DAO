@@ -1,6 +1,6 @@
-package models;
+package dtos;
 
-public class Person {
+public class Person implements DTO{
 
     private Integer id;
     private String firstName;
