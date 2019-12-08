@@ -14,6 +14,15 @@ public class DAOPersonTest {
     }
 
     @Test
+    public void testDelete(){
+        Person newGuy = new Person("NewFirstName", "NewLastName", "aNewEmail", "Male");
+        Person actual1 = daoPerson.create(newGuy);
+        Integer id = daoPerson.findByInfo("NewFirstName", "NewLastName", "aNewEmail", "Male").getId();
+        daoPerson.delete(id);
+        Assert.assertNull(daoPerson.findById(id));
+    }
+
+    @Test
     public void testFindById() {
         String expectedFirst = "Clyve";
         String expectedLast = "Fourcade";
@@ -29,19 +38,10 @@ public class DAOPersonTest {
 
     @Test
     public void testCreate(){
-        Person newGuy = new Person("First", "Last", "anEmail", "Male");
-        Person actual = daoPerson.create(newGuy);
-
+        Person newGuy = new Person(Integer.MIN_VALUE,"First", "Last", "anEmail", "Male");
+        Person actual = daoPerson.createWithId(newGuy);
         Assert.assertEquals(newGuy, actual);
-    }
-
-    @Test
-    public void testDelete(){
-        Person newGuy = new Person("NewFirstName", "NewLastName", "aNewEmail", "Male");
-        Person actual1 = daoPerson.create(newGuy);
-        Integer id = daoPerson.findByInfo("NewFirstName", "NewLastName", "aNewEmail", "Male").getId();
-        daoPerson.delete(id);
-        Assert.assertNull(daoPerson.findById(id));
+        daoPerson.delete(newGuy.getId());
     }
 
     @Test
@@ -51,5 +51,6 @@ public class DAOPersonTest {
         newGuy.setFirstName("Updated");
         daoPerson.update(newGuy);
         Assert.assertEquals(newGuy.getFirstName(), daoPerson.findById(Integer.MAX_VALUE).getFirstName());
+        daoPerson.delete(Integer.MAX_VALUE);
     }
 }
