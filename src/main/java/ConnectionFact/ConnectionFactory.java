@@ -1,22 +1,26 @@
 package ConnectionFact;
 
-import com.mysql.jdbc.Driver;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionFactory {
-    public static final String URL = "jdbc:mysql://localhost:5432/People";
-    public static final String USER = "testuser";
-    public static final String PASS = "testpass";
+    public static final String URL = "jdbc:postgresql://localhost:5432/mike";
+    public static final String USER = "mike";
+    public static final String PASS = "password";
 
     public static Connection getConnection()
     {
         try {
-            DriverManager.registerDriver(new Driver());
-            return DriverManager.getConnection(URL, USER, PASS);
+            return DriverManager.getConnection(URL,USER,PASS);
         } catch (SQLException ex) {
+            System.err.format("SQL State: %s\n%s\n", ex.getSQLState(), ex.getMessage());
             throw new RuntimeException("Error connecting to the database", ex);
         }
+    }
+
+    public static void main(String[] args) {
+        Connection connection = ConnectionFactory.getConnection();
     }
 }
